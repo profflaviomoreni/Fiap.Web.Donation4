@@ -1,0 +1,14 @@
+﻿@model ProdutoModel
+
+<tr>
+    <td data-field="id">@Model.ProdutoId</td>
+    <td data-field="name">@Model.Nome</td>
+    <td data-field="categoria">@Model.CategoriaId</td>
+    <td data-field="disponivel">@Model.Disponivel</td>
+    <td data-field="dataExpiracao">@Model.DataExpiracao</td>
+    <td class="actions" width="220">
+        <a asp-controller="Produto" asp-action="Detalhe" asp-route-id="@Model.ProdutoId">Detalhe</a>
+        <a asp-controller="Produto" asp-action="Editar" asp-route-id="@Model.ProdutoId">Editar</a>
+        <a href="#">Remover</a>
+    </td>
+</tr>

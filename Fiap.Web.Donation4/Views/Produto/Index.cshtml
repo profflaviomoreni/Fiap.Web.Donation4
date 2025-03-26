@@ -27,6 +27,9 @@
 
         @foreach (var item in Model)
         {
+            <partial name="_ProdutoLinha" model="@item" />
+
+            <!--
             <tr>
                 <td data-field="id">@item.ProdutoId</td>
                 <td data-field="name">@item.Nome</td>
@@ -39,6 +42,7 @@
                     <a href="#">Remover</a>
                 </td>
             </tr>
+            -->
         }
         
     </tbody>
