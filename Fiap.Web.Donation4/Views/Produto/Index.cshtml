@@ -1,0 +1,45 @@
+﻿@model IList<ProdutoModel>
+
+<h1>Meus produtos</h1>
+
+<p class="toolbar">
+    <a href="#" class="create btn btn-dark">Novo produto</a>
+</p>
+
+@if (!string.IsNullOrEmpty(TempData["SuccessMessage"] as string))
+{
+    <div class="alert alert-info">@TempData["SuccessMessage"]</div>
+}
+
+
+<table class="table table-striped" border="1" cellspacing="0" cellpadding="0">
+    <thead>
+        <tr>
+            <th data-field="id">Id</th>
+            <th data-field="name">Nome</th>
+            <th data-field="tipo">Categoria</th>
+            <th data-field="disponivel">Disponível</th>
+            <th data-field="dataexpiracao">Expiração</th>
+            <th class="actions" width="220">Ações</th>
+        </tr>
+    </thead>
+    <tbody>
+
+        @foreach (var item in Model)
+        {
+            <tr>
+                <td data-field="id">@item.ProdutoId</td>
+                <td data-field="name">@item.Nome</td>
+                <td data-field="categoria">@item.CategoriaId</td>
+                <td data-field="disponivel">@item.Disponivel</td>
+                <td data-field="dataExpiracao">@item.DataExpiracao</td>
+                <td class="actions" width="220">
+                    <a asp-controller="Produto" asp-action="Detalhe" asp-route-id="@item.ProdutoId">Detalhe</a>
+                    <a asp-controller="Produto" asp-action="Editar" asp-route-id="@item.ProdutoId">Editar</a>
+                    <a href="#">Remover</a>
+                </td>
+            </tr>
+        }
+        
+    </tbody>
+</table>
