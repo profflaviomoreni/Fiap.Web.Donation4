@@ -18,7 +18,7 @@ namespace Fiap.Web.Donation4.Models
 
 
         [NotMapped]
-        public string Token { get; set; }
+        public string? Token { get; set; }
 
     }
 }

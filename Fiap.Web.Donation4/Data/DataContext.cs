@@ -10,6 +10,8 @@ namespace Fiap.Web.Donation4.Data
 
         public DbSet<UsuarioModel> Usuarios { get; set; }
 
+        public DbSet<ProdutoModel> Produtos { get; set; }
+
 
         public DataContext(DbContextOptions options) : base(options)
         {

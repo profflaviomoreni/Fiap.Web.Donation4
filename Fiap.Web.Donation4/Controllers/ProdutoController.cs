@@ -1,19 +1,46 @@
-﻿using Fiap.Web.Donation4.Models;
+﻿using Fiap.Web.Donation4.Data;
+using Fiap.Web.Donation4.Models;
 using Microsoft.AspNetCore.Mvc;
 
 namespace Fiap.Web.Donation4.Controllers
 {
     public class ProdutoController : Controller
     {
+        private readonly DataContext _dataContext;
+
+        public ProdutoController(DataContext dataContext)
+        {
+            _dataContext = dataContext;
+        }
+
         [HttpGet]
         public IActionResult Index()
         {
-            // listaProdutos
-            var produtos = ListarProdutosMock();
-
-            //ViewBag.Produtos = produtos;
-            
+            var produtos = _dataContext.Produtos.ToList();
             return View(produtos);
+        }
+
+        [HttpGet]
+        public IActionResult Create()
+        {
+            return View(new ProdutoModel());
+        }
+
+        [HttpPost]
+        public IActionResult Create(ProdutoModel produtoModel)
+        {
+
+            if ( ModelState.IsValid ) {
+                _dataContext.Produtos.Add(produtoModel);
+                _dataContext.SaveChanges();
+
+                var mensagem = $"O produto {produtoModel.Nome} foi inserido com sucesso";
+                TempData["SuccessMessage"] = mensagem;
+                return RedirectToAction(nameof(Index));
+            } else { 
+                return View(new ProdutoModel()); 
+            }
+
         }
 
 
