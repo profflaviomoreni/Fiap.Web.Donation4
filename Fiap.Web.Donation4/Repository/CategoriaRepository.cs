@@ -39,13 +39,6 @@ namespace Fiap.Web.Donation4.Repository
 
         public void Delete(int id) {
 
-            /*
-            var categoria = new CategoriaModel()
-            {
-                CategoriaId = id
-            };
-            */
-
             var categoria = FindById(id);
             _dataContext.Categorias.Remove(categoria);
             _dataContext.SaveChanges();

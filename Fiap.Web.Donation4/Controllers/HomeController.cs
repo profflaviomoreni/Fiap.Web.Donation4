@@ -1,5 +1,8 @@
+using Fiap.Web.Donation4.Data;
 using Fiap.Web.Donation4.Models;
+using Fiap.Web.Donation4.Repository;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.Build.Framework;
 using System.Diagnostics;
 
 namespace Fiap.Web.Donation4.Controllers
@@ -8,14 +11,30 @@ namespace Fiap.Web.Donation4.Controllers
     {
         private readonly ILogger<HomeController> _logger;
 
-        public HomeController(ILogger<HomeController> logger)
+        private readonly ProdutoRepository _produtoRepository;
+
+        private readonly int UserId = 1;
+        private readonly bool Autenticado = true;
+
+
+        public HomeController(ILogger<HomeController> logger, DataContext dataContext)
         {
             _logger = logger;
+            _produtoRepository = new ProdutoRepository(dataContext);
         }
 
         public IActionResult Index()
         {
-            return View();
+            var produtos = new List<ProdutoModel>();
+
+            if (Autenticado) { 
+                produtos = _produtoRepository.FindAllAvaliablesForChanges(UserId);
+            } else
+            {
+                produtos = _produtoRepository.FindAllAvaliablesWithCategoriaAndUser();
+            }
+
+            return View(produtos);
         }
 
         public IActionResult Privacy()

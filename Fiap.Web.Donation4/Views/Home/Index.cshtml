@@ -1,8 +1,26 @@
-﻿@{
+﻿@model IList<ProdutoModel>
+
+@{
     ViewData["Title"] = "Home Page";
 }
 
 <div class="text-center">
-    <h1 class="display-4">Welcome</h1>
-    <p>Learn about <a href="https://learn.microsoft.com/aspnet/core">building Web apps with ASP.NET Core</a>.</p>
+    <h1 class="display-4">Vitrine</h1>
+
+    <div class="d-flex flex-wrap">
+    @foreach( var produto in Model)
+    {
+            <div class="card" style="width: 18rem;">
+                <div class="card-body">
+                    <h5 class="card-title">@produto.Nome</h5>
+                    <p class="card-text">@produto.Descricao</p>
+                    <p class="card-text">@produto.Valor</p>
+                    <p class="card-text">@produto.Categoria.NomeCategoria</p>
+                    <p class="card-text">@produto.Usuario.Email</p>
+                    <a asp-controller="Troca" asp-action="Index" asp-route-id="@produto.ProdutoId" class="btn btn-primary">Trocar</a>
+                </div>
+            </div>
+    }
+    </div>
+
 </div>

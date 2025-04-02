@@ -1,0 +1,36 @@
+﻿@model TrocaModel
+
+<h1>Troca</h1>
+<hr />
+<div class="row">
+    <div class="col-md-4">
+        <form asp-controller="Troca" asp-action="Index" method="post">
+            <input type="hidden" name="ProdutoIdEscolhido" value="@Model.ProdutoEscolhido.ProdutoId" />
+
+            <div class="form-group">
+                <label class="control-label">Nome: @Model.ProdutoEscolhido.Nome</label>
+            </div>
+            <div class="form-group">
+                <label class="control-label">Descrição: @Model.ProdutoEscolhido.Descricao</label>
+            </div>
+            <div class="form-group">
+                <label class="control-label">Sugestão: @Model.ProdutoEscolhido.SugestaoTroca</label>
+            </div>
+            <div class="form-group">
+                <label class="control-label">Valor: @Model.ProdutoEscolhido.Valor</label>
+            </div>
+
+            <div class="form-group">
+                <label class="control-label">Selecione seu produto:</label>
+                <select asp-for="ProdutoIdMeu" asp-items="@ViewBag.MeusProdutos">
+                    <option value="">Selecione o seu produto</option>
+                </select>
+            </div>
+
+
+            <div class="form-group">
+                <input type="submit" value="Trocar" class="btn btn-primary" />
+            </div>
+        </form>
+    </div>
+</div>

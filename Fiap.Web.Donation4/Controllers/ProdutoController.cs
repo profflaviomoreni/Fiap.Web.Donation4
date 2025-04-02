@@ -1,34 +1,46 @@
 ﻿using Fiap.Web.Donation4.Data;
 using Fiap.Web.Donation4.Models;
+using Fiap.Web.Donation4.Repository;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.AspNetCore.Mvc.Rendering;
 
 namespace Fiap.Web.Donation4.Controllers
 {
     public class ProdutoController : Controller
     {
+        private readonly int UserId = 1;
+
         private readonly DataContext _dataContext;
+        private readonly CategoriaRepository _categoriaRepository;
+        private readonly ProdutoRepository _produtoRepository;
 
         public ProdutoController(DataContext dataContext)
         {
             _dataContext = dataContext;
+            _categoriaRepository = new CategoriaRepository(dataContext);
+            _produtoRepository = new ProdutoRepository(dataContext);
         }
 
         [HttpGet]
         public IActionResult Index()
         {
-            var produtos = _dataContext.Produtos.ToList();
+            var produtos = _produtoRepository.FindAllAvaliables();
             return View(produtos);
         }
 
         [HttpGet]
         public IActionResult Create()
         {
+            LoadViewBagCategorias();
+
             return View(new ProdutoModel());
         }
 
         [HttpPost]
         public IActionResult Create(ProdutoModel produtoModel)
         {
+
+            produtoModel.UsuarioId = UserId;
 
             if ( ModelState.IsValid ) {
                 _dataContext.Produtos.Add(produtoModel);
@@ -37,19 +49,26 @@ namespace Fiap.Web.Donation4.Controllers
                 var mensagem = $"O produto {produtoModel.Nome} foi inserido com sucesso";
                 TempData["SuccessMessage"] = mensagem;
                 return RedirectToAction(nameof(Index));
-            } else { 
-                return View(new ProdutoModel()); 
+            } else
+            {
+                LoadViewBagCategorias();
+
+                return View(new ProdutoModel());
             }
 
         }
 
+        private void LoadViewBagCategorias()
+        {
+            var categorias = _categoriaRepository.FindAll();
+            var selectCategorias = new SelectList(categorias, "CategoriaId", "NomeCategoria");
+            ViewBag.Categorias = selectCategorias;
+        }
 
         [HttpGet]
         public IActionResult Editar(int id)
         {
-            // SELECT * FROM produto WHERE ProdutoId = {id}
-
-            var produto = ListarProdutosMock().Where( p=> p.ProdutoId == id).FirstOrDefault();
+            var produto = _produtoRepository.FindById(id);
 
             return View(produto);
         }
@@ -58,6 +77,8 @@ namespace Fiap.Web.Donation4.Controllers
         [HttpPost]
         public IActionResult Editar(ProdutoModel produtoModel)
         {
+
+            produtoModel.UsuarioId = UserId;
 
             if ( string.IsNullOrEmpty(produtoModel.Nome) ) {
 
@@ -73,6 +94,8 @@ namespace Fiap.Web.Donation4.Controllers
 
                 TempData["SuccessMessage"] = mensagem;
 
+                
+
                 // UPDATE produto SET ... WHERE produtoId = {produtomodel.ProdutoId}
                 return RedirectToAction(nameof(Index));
             }
@@ -83,10 +106,7 @@ namespace Fiap.Web.Donation4.Controllers
         [HttpGet]
         public IActionResult Detalhe(int id)
         {
-            // SELECT * FROM produto WHERE ProdutoId = {id}
-
-            var produto = ListarProdutosMock().Where(p => p.ProdutoId == id).FirstOrDefault();
-
+            var produto = _produtoRepository.FindById(id);
             return View(produto);
         }
 
