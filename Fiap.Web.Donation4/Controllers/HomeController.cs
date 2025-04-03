@@ -2,22 +2,19 @@ using Fiap.Web.Donation4.Data;
 using Fiap.Web.Donation4.Models;
 using Fiap.Web.Donation4.Repository;
 using Microsoft.AspNetCore.Mvc;
-using Microsoft.Build.Framework;
 using System.Diagnostics;
 
 namespace Fiap.Web.Donation4.Controllers
 {
-    public class HomeController : Controller
+    public class HomeController : BaseController
     {
         private readonly ILogger<HomeController> _logger;
 
         private readonly ProdutoRepository _produtoRepository;
 
-        private readonly int UserId = 1;
-        private readonly bool Autenticado = true;
-
-
-        public HomeController(ILogger<HomeController> logger, DataContext dataContext)
+        public HomeController(  ILogger<HomeController> logger, 
+                                DataContext dataContext, 
+                                IHttpContextAccessor httpContextAccessor) : base(httpContextAccessor)
         {
             _logger = logger;
             _produtoRepository = new ProdutoRepository(dataContext);

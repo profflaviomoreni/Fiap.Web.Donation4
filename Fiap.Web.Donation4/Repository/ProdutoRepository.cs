@@ -46,7 +46,7 @@ namespace Fiap.Web.Donation4.Repository
         }
 
 
-        public List<ProdutoModel> FindAllAvaliablesById(int userId)
+        public List<ProdutoModel> FindAllAvaliablesById(int? userId)
         {
             return _dataContext.Produtos
                         .Where(
@@ -61,7 +61,7 @@ namespace Fiap.Web.Donation4.Repository
         }
 
 
-        public List<ProdutoModel> FindAllAvaliablesForChanges(int userId)
+        public List<ProdutoModel> FindAllAvaliablesForChanges(int? userId)
         {
             return _dataContext.Produtos
                         .Where(

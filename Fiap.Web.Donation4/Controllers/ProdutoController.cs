@@ -6,17 +6,14 @@ using Microsoft.AspNetCore.Mvc.Rendering;
 
 namespace Fiap.Web.Donation4.Controllers
 {
-    public class ProdutoController : Controller
+    public class ProdutoController : BaseController
     {
-        private readonly int UserId = 1;
 
-        private readonly DataContext _dataContext;
         private readonly CategoriaRepository _categoriaRepository;
         private readonly ProdutoRepository _produtoRepository;
 
-        public ProdutoController(DataContext dataContext)
+        public ProdutoController(DataContext dataContext, IHttpContextAccessor httpContextAccessor) : base(httpContextAccessor)
         {
-            _dataContext = dataContext;
             _categoriaRepository = new CategoriaRepository(dataContext);
             _produtoRepository = new ProdutoRepository(dataContext);
         }
@@ -40,11 +37,10 @@ namespace Fiap.Web.Donation4.Controllers
         public IActionResult Create(ProdutoModel produtoModel)
         {
 
-            produtoModel.UsuarioId = UserId;
+            produtoModel.UsuarioId = (int)UserId;
 
             if ( ModelState.IsValid ) {
-                _dataContext.Produtos.Add(produtoModel);
-                _dataContext.SaveChanges();
+                _produtoRepository.Insert(produtoModel);
 
                 var mensagem = $"O produto {produtoModel.Nome} foi inserido com sucesso";
                 TempData["SuccessMessage"] = mensagem;
@@ -69,7 +65,7 @@ namespace Fiap.Web.Donation4.Controllers
         public IActionResult Editar(int id)
         {
             var produto = _produtoRepository.FindById(id);
-
+            LoadViewBagCategorias();
             return View(produto);
         }
 
@@ -78,26 +74,19 @@ namespace Fiap.Web.Donation4.Controllers
         public IActionResult Editar(ProdutoModel produtoModel)
         {
 
-            produtoModel.UsuarioId = UserId;
-
-            if ( string.IsNullOrEmpty(produtoModel.Nome) ) {
-
-                var mensagem = "O campo Nome é requerido, favor preencher";
-
-                ViewBag.ErrorMessage = mensagem;
-
-                return View(produtoModel);
-
-            } else
+            if (ModelState.IsValid)
             {
-                var mensagem = $"O produto {produtoModel.Nome} foi alterado com sucesso";
+                produtoModel.UsuarioId = (int) UserId;
+                _produtoRepository.Update(produtoModel);
 
-                TempData["SuccessMessage"] = mensagem;
-
-                
-
-                // UPDATE produto SET ... WHERE produtoId = {produtomodel.ProdutoId}
+                TempData["MensagemSucesso"] = $"Produto {produtoModel.Nome} alterado com sucesso";
                 return RedirectToAction(nameof(Index));
+            }
+            else
+            {
+                LoadViewBagCategorias();
+                ViewBag.MensagemErro = "Preencha todos os dados corretamente";
+                return View(produtoModel);
             }
 
         }
@@ -109,51 +98,6 @@ namespace Fiap.Web.Donation4.Controllers
             var produto = _produtoRepository.FindById(id);
             return View(produto);
         }
-
-
-
-        private List<ProdutoModel> ListarProdutosMock()
-        {
-            // SELECT * FROM produtos;
-
-            var produtos = new List<ProdutoModel>{
-                new ProdutoModel()
-                {
-                    ProdutoId = 1,
-                    Nome = "Iphone 11",
-                    CategoriaId = 1,
-                    Disponivel = true,
-                    DataExpiracao = DateTime.Now,
-                },
-                new ProdutoModel()
-                {
-                    ProdutoId = 2,
-                    Nome = "Iphone 12",
-                    CategoriaId = 2,
-                    Disponivel = true,
-                    DataExpiracao = DateTime.Now,
-                },
-                new ProdutoModel()
-                {
-                    ProdutoId = 3,
-                    Nome = "Iphone 13",
-                    CategoriaId = 1,
-                    Disponivel = true,
-                    DataExpiracao = DateTime.Now,
-                },
-                new ProdutoModel()
-                {
-                    ProdutoId = 4,
-                    Nome = "Iphone 14",
-                    CategoriaId = 1,
-                    Disponivel = false,
-                    DataExpiracao = DateTime.Now,
-                },
-            };
-
-            return produtos;
-        }
-
 
     }
 }

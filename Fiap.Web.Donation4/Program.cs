@@ -1,4 +1,5 @@
 using Fiap.Web.Donation4.Data;
+using Microsoft.AspNetCore.Mvc.Infrastructure;
 using Microsoft.EntityFrameworkCore;
 
 var builder = WebApplication.CreateBuilder(args);
@@ -6,12 +7,16 @@ var builder = WebApplication.CreateBuilder(args);
 // Add services to the container.
 builder.Services.AddControllersWithViews();
 
+// Usar a Sessão e o Contexto Http
+builder.Services.AddHttpContextAccessor();
+
 
 var connectionString = builder.Configuration.GetConnectionString("databaseUrl");
 builder.Services.AddDbContext<DataContext>(
     opt => opt.UseSqlServer(connectionString).EnableSensitiveDataLogging(true)
 );
 
+builder.Services.AddSession();
 
 
 var app = builder.Build();
@@ -28,6 +33,8 @@ app.UseHttpsRedirection();
 app.UseStaticFiles();
 
 app.UseRouting();
+
+app.UseSession();
 
 app.UseAuthorization();
 

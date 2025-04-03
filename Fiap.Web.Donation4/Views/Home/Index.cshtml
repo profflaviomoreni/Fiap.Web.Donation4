@@ -1,11 +1,22 @@
 ﻿@model IList<ProdutoModel>
 
 @{
-    ViewData["Title"] = "Home Page";
+    int? UserId = 0;
+    UserId = Context.Session.GetInt32("UserId");
 }
 
 <div class="text-center">
     <h1 class="display-4">Vitrine</h1>
+
+    @if (!string.IsNullOrEmpty(TempData["Sucesso"] as string))
+    {
+        <div class="alert alert-info">@TempData["Sucesso"]</div>
+    }
+
+    @if (!string.IsNullOrEmpty(TempData["Erro"] as string))
+    {
+        <div class="alert alert-warning">@TempData["Erro"]</div>
+    }
 
     <div class="d-flex flex-wrap">
     @foreach( var produto in Model)
@@ -17,7 +28,10 @@
                     <p class="card-text">@produto.Valor</p>
                     <p class="card-text">@produto.Categoria.NomeCategoria</p>
                     <p class="card-text">@produto.Usuario.Email</p>
-                    <a asp-controller="Troca" asp-action="Index" asp-route-id="@produto.ProdutoId" class="btn btn-primary">Trocar</a>
+                    @if (UserId != null && UserId != 0)
+                    {
+                        <a asp-controller="Troca" asp-action="Index" asp-route-id="@produto.ProdutoId" class="btn btn-primary">Trocar</a>
+                    }
                 </div>
             </div>
     }
